@@ -12,8 +12,17 @@ app.post('/user', bodyParser, validateUser, UserController.createUser);
 app.get('/users', UserController.getUsers);
 
 app.get('/user/:id', UserController.getUser);
-app.put('/user/:id');
-app.delete('/user/:id');
+/*
+    Обновление юзера так же связано с получением данных из JSON
+    и их также надо парсить и проверить на валидность как и на POST маршруте
+    Надо при этом не забыть что все поля которые указаны как обязательные должны быть отправлены в запросе
+    иначе валидатор выкинет ошибку
+*/
+app.put('/user/:id', bodyParser, validateUser, UserController.updateUser);
+/*
+    Для удаления юзера ничего кроме айдишки знать не нужно, а её мы передали в пути
+*/
+app.delete('/user/:id',UserController.deleteUser);
 
 
 app.listen(PORT, () => {
