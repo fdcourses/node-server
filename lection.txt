@@ -61,3 +61,15 @@ DELETE https://facebook.com/comments/3
   || ответы
 БЕК
 
+
+===========DAY 2===========
+  FRONT (VIEW)
+   /\
+ (HTTP)
+(TCP/IP)
+  \/
+ BACK (CONTROLLER)
+  /\
+  ???
+  \/
+DATABASE (***MODEL***)
