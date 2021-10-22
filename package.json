@@ -1,0 +1,27 @@
+{
+  "name": "http-server",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "start": "nodemon ./app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fdcourses/node-server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fdcourses/node-server/issues"
+  },
+  "homepage": "https://github.com/fdcourses/node-server#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "yup": "^0.32.11"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.14"
+  }
+}
