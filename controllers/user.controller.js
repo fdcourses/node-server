@@ -1,40 +1,30 @@
-let users = [];
+const { User } = require('../models');
 
-module.exports.createUser = (req, res, next) => {
+module.exports.createUser = async (req, res, next) => {
   const { body: validatedUser } = req;
 
-  validatedUser.id = users.length;
-  validatedUser.passwordHash = 'HASGsdafgdssar32849y32';
+  const newUser = await User.create(validatedUser);
 
-  delete validatedUser.password;
+  res.status(201).send(newUser);
+};
 
-  users.push(validatedUser);
-
-  delete validatedUser.passwordHash;
-
-  res.status(201).send(validatedUser);
-}
-
-module.exports.getUsers = (req, res, next) => {
-
+module.exports.getUsers = async (req, res, next) => {
+  const users = await User.findAll();
   res.status(200).send(users);
-}
+};
 
-module.exports.getUser = (req, res, next) => {
-  const {params: {id}} = req;
+module.exports.getUser = async (req, res, next) => {
+  try {
+    const {
+      params: { id },
+    } = req;
+    const foundUser = await User.findById(id);
 
-  const foundUser = users.find((user) => {
-
-    return Number(user.id) === Number(id);
-  });
-
-  if(foundUser) {
-    res.send(foundUser);
-  } else {
-    res.status(404).send("USER NOT FOUND");
+    res.status(200).send(foundUser);
+  } catch (err) {
+    res.status(404).send('USER NOT FOUND');
   }
-
-}
+};
 
 /*
   Сначала юзера надо найти, если он есть то нужно найти его точое место в массиве с помощью findIndex.
@@ -43,28 +33,23 @@ module.exports.getUser = (req, res, next) => {
   Если не нашли то отправляем 404
 */
 
-module.exports.updateUser = (req, res,next) => {
-  const {params : {id}, body} = req;
+module.exports.updateUser = async (req, res, next) => {
+  try {
+    const {
+      params: { id },
+      body,
+    } = req;
 
-  const userIndex = users.findIndex((user) => user.id === Number(id));
+    const foundUser = await User.findById(id);
 
-  if(userIndex !== -1) {
-  
-    const updatedUser = {
-      ...users[userIndex],
-      ...body,
-  
-    }
-    delete updatedUser.password; // убираем пароль опять
-
-    users[userIndex] = updatedUser;
-
+    const updatedUser = await foundUser.update(body);
 
     res.status(200).send(updatedUser);
-  } else{
-    res.status(404).send("USER NOT FOUND");
-  }
-}
+
+  } catch (err) {
+    res.status(404).send('NOT FOUND');
+  }  
+};
 
 /*
   Для удаления достаточно знать айдишник а дальше можно отфильтровать массив, 
@@ -72,17 +57,12 @@ module.exports.updateUser = (req, res,next) => {
   только массив users должен быть летовской переменной
   Если не нашли то отправляем 404
 */
-module.exports.deleteUser = (req, res, next) => {
-  const {params : {id}} = req;
+module.exports.deleteUser = async (req, res, next) => {
+  const {
+    params: { id },
+  } = req;
 
-  const userIndex = users.findIndex((user) => user.id === Number(id));
+  const deletedUserId = await User.deleteById(id);
 
-  if(userIndex !== -1) {
-    users = users.filter((user) => user.id !== Number(id));
-
-    // можем отправить на клиент айдишку удаленного юзера чтобы он там сам его у себя удалил
-    res.status(200).send(id);
-  } else {
-    res.status(404).send("USER NOT FOUND");
-  }
-}
+  res.status(200).send(deletedUserId);
+};
